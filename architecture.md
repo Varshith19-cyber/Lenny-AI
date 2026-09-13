@@ -8,45 +8,45 @@
 
 ```mermaid
 graph TB
-    subgraph Client["Frontend Layer (Next.js 14 / TypeScript)"]
-        LandingPage["Landing Page (Hero / Live Stats / CTA)"]
-        AppShell["App Shell Container (Key-Rotated)"]
-        Sidebar["Sidebar (Sessions / Knowledge Hub)"]
-        ChatHeader["Header (Model Picker / Status / Landing Nav)"]
-        MessageList["Conversation Feed (Markdown / Citation Cards)"]
-        Composer["Composer (Auto-resize / Intent Chips)"]
-        ArtifactViewer["Sandboxed Artifact Viewer (Preview / Code)"]
+    subgraph Client["Frontend Layer — Next.js 14 + TypeScript"]
+        LandingPage["Landing Page — Hero / Live Stats / CTA"]
+        AppShell["App Shell Container"]
+        Sidebar["Sidebar — Sessions + Knowledge Hub"]
+        ChatHeader["Header — Model Picker + Status"]
+        MessageList["Conversation Feed — Markdown + Citation Cards"]
+        Composer["Composer — Drop-up Model Selector"]
+        ArtifactViewer["Sandboxed Artifact Viewer — Preview + Code"]
     end
 
-    subgraph Gateway["API Gateway Layer (FastAPI 0.110 / Uvicorn)"]
-        CORS["CORS & Request Middleware"]
-        Router["Agent Intent Classifier & Router"]
-        HealthRoute["Health & Provider Diagnostics (/health)"]
-        SessionRoute["Session Lifecycle Manager (/sessions)"]
-        ChatRoute["Chat & Inference Handler (/chat)"]
-        ArtifactRoute["Artifacts Handler (/artifacts)"]
-        IngestRoute["Transcript Ingestion & Pipeline (/ingest)"]
+    subgraph Gateway["API Gateway Layer — FastAPI 0.110 + Uvicorn"]
+        CORS["CORS + Request Middleware"]
+        Router["Agent Intent Classifier + Router"]
+        HealthRoute["Health + Provider Diagnostics — /health"]
+        SessionRoute["Session Lifecycle Manager — /sessions"]
+        ChatRoute["Chat + Inference Handler — /chat"]
+        ArtifactRoute["Artifacts Handler — /artifacts"]
+        IngestRoute["Transcript Ingestion Pipeline — /ingest"]
     end
 
-    subgraph Intelligence["Cognitive Engine & Core Services"]
-        Retriever["Vector Search Retriever (Top-K Chunks)"]
-        Embedder["384d Dense Embedder (Char N-Gram + TF-IDF)"]
+    subgraph Intelligence["Cognitive Engine + Core Services"]
+        Retriever["Vector Search Retriever — Top-K Chunks"]
+        Embedder["384d Dense Embedder — Char N-Gram + TF-IDF"]
         Ship30Agent["Ship 30 for 30 Content Skill Engine"]
         ArtifactAgent["Interactive Artifact Generator"]
         Sanitizer["Bleach HTML Security Sanitizer"]
-        ProviderFactory["LLM Provider Factory & Fallback Engine"]
+        ProviderFactory["LLM Provider Factory + Fallback Engine"]
     end
 
     subgraph Providers["Multi-Model Orchestration Layer"]
-        OllamaProvider["Ollama Local Daemon (llama3, mistral)"]
-        OpenAIProvider["OpenAI Cloud (gpt-4o-mini, gpt-4o)"]
-        GeminiProvider["Google Gemini Cloud (gemini-1.5-flash)"]
-        AnthropicProvider["Anthropic Claude Cloud (claude-3-5-sonnet)"]
+        OllamaProvider["Ollama Local Daemon — llama3 + mistral"]
+        OpenAIProvider["OpenAI Cloud — gpt-4o-mini + gpt-4o"]
+        GeminiProvider["Google Gemini Cloud — gemini-1.5-flash"]
+        AnthropicProvider["Anthropic Claude Cloud — claude-3-5-sonnet"]
     end
 
-    subgraph Persistence["Storage & Persistence Layer"]
-        DB[(SQLite lenny_growth.db / PostgreSQL 16 + pgvector)]
-        Transcripts[(Seed Transcripts /data/transcripts/)]
+    subgraph Persistence["Storage + Persistence Layer"]
+        DB[("SQLite lenny_growth.db / PostgreSQL 16 + pgvector")]
+        Transcripts[("Seed Transcripts — /data/transcripts/")]
     end
 
     LandingPage -->|Start Chatting| AppShell
