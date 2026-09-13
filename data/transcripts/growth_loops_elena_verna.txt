@@ -1,0 +1,23 @@
+Lenny's Podcast Transcript: Elena Verna on Product-Led Growth & Growth Loops
+
+Host: Lenny Rachitsky
+Guest: Elena Verna (Growth Advisor, former Head of Growth at Amplitude, Miro, SurveyMonkey)
+
+Lenny: Elena, welcome! Let's break down Product-Led Growth (PLG) and why traditional linear marketing funnels are dying.
+
+Elena Verna: Thanks Lenny. Linear funnels (Top of Funnel -> MQL -> SQL -> Closed Won) are inefficient because they require constant linear spending to generate linear output. Product-Led Growth is powered by Growth Loops. A growth loop is a closed system where the output of one user journey becomes the input for the next user acquisition or retention cycle.
+
+Lenny: What are the main types of growth loops that product teams should build?
+
+Elena Verna: There are three foundational growth loops:
+1. Viral / Referral Loops: Users directly invite colleagues or collaborators to complete their work. Think Miro, Figma, or Loom where sharing the artifact creates immediate new user onboarding.
+2. Content / SEO Loops: Users generate content (UGC) or public artifacts (like Notion templates or Miroverse templates) that get indexed by search engines, driving organic acquisition.
+3. Paid / Reinvestment Loops: Revenue generated per user directly funds performance marketing to acquire more users at predictable Customer Acquisition Cost (CAC) payback periods.
+
+Lenny: What is the biggest mistake companies make when attempting PLG?
+
+Elena Verna: Trying to add PLG as a "marketing tactic" on top of a enterprise sales product without changing the product experience. PLG requires self-serve value realization before paywalls. If a user cannot experience the core "aha moment" within 5 minutes without talking to a salesperson, you don't have PLG.
+
+Lenny: How should teams think about Freemium vs Free Trial?
+
+Elena Verna: Freemium is an acquisition mechanism designed to maximize top-of-funnel reach and build network effects. Free Trial is a monetization mechanism designed to create urgency for immediate conversion. Use Freemium if your product benefits from viral loops or data network effects; use Free Trial if value is immediately clear and unit costs are high.

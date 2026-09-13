@@ -1,0 +1,19 @@
+Lenny's Podcast Transcript: Patrick Campbell on Pricing Strategy & Retention
+
+Host: Lenny Rachitsky
+Guest: Patrick Campbell (Founder of ProfitWell, acquired by Paddle)
+
+Lenny: Patrick, pricing is one of the most under-optimized growth levers. Why do product teams ignore pricing?
+
+Patrick Campbell: Product teams focus 80% of their energy on acquisition, 15% on retention, and only 5% on pricing and packaging. Yet our data across 30,000 SaaS companies shows that improving pricing has 4x the impact on bottom-line growth compared to acquisition.
+
+Lenny: How should companies determine their pricing metric and value metric?
+
+Patrick Campbell: A value metric is what you charge for (e.g., per active user, per GB stored, per email sent, per transaction processed). A great value metric satisfies three criteria:
+1. It scales automatically with the customer's growth and value realization.
+2. It is intuitively understood by buyers prior to purchase.
+3. It keeps retention high because low-usage users pay less and high-usage users naturally upgrade.
+
+Lenny: What is the biggest pricing mistake startups make?
+
+Patrick Campbell: Cost-plus pricing or copying competitors' price points. You must measure Willingness to Pay through relative preference analysis and Van Westendorp price sensitivity surveys directly with target buyers.

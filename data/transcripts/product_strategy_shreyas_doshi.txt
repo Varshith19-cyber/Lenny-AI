@@ -1,0 +1,28 @@
+Lenny's Podcast Transcript: Shreyas Doshi on Product Strategy & Execution
+
+Host: Lenny Rachitsky
+Guest: Shreyas Doshi (Former Product Leader at Stripe, Twitter, Google, Yahoo)
+
+Lenny: Welcome Shreyas. Today I want to talk about how product leaders build real product strategy vs just executing feature roadmaps.
+
+Shreyas Doshi: Thanks Lenny. Most product teams operate as "feature factories". They mistake a list of features with estimated dates for a strategy. Strategy is not a roadmap. Strategy is a cohesive set of choices about how you will win in the market despite limited resources and intense competition.
+
+Lenny: What are the core components of a great product strategy?
+
+Shreyas Doshi: A great product strategy has three essential pillars:
+1. Leverage: Identifying the critical leverage point where a small input creates asymmetrical output for users.
+2. Trade-offs: Explicitly deciding what NOT to do. If your strategy doesn't make anyone uncomfortable or list explicit non-goals, it's not a strategy.
+3. Product-Market Fit Continuity: PMF is not a one-time binary state. You lose PMF as the market shifts unless you continuously evolve your strategic positioning.
+
+Lenny: How should PMs manage their time to focus on strategic impact?
+
+Shreyas Doshi: I teach the LNO Framework:
+- Leverage Tasks (L): High-impact work (like core strategy, architecture, key hires) where 10x quality produces massive business returns. Give these your best energy.
+- Neutral Tasks (N): Standard work (like status reports, routine meetings) where good-enough quality (1x) is sufficient.
+- Overhead Tasks (O): Administrative tasks where minimum viable compliance is optimal.
+
+Most PMs burn out because they try to deliver 10x quality on Overhead tasks while neglecting Leverage tasks.
+
+Lenny: How do you measure if a product team is truly strategic?
+
+Shreyas Doshi: Look at their pre-mortems. Before launching a major strategic initiative, conduct a pre-mortem assuming it is 12 months in the future and the product has failed catastrophically. Ask the team: "Why did it fail?" This unlocks candid insights that standard design reviews suppress.

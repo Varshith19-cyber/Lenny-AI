@@ -1,0 +1,29 @@
+# Environment variables & secrets
+.env
+.env.local
+.env.production
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.pytest_cache/
+*.db
+*.sqlite
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+*.swp

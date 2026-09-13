@@ -1,0 +1,22 @@
+Lenny's Podcast Transcript: Marty Cagan on Empowered Product Teams & Discovery
+
+Host: Lenny Rachitsky
+Guest: Marty Cagan (Founder of Silicon Valley Product Group, Author of Inspired & Empowered)
+
+Lenny: Marty, welcome. You frequently write about the difference between feature teams and empowered product teams. What is the core distinction?
+
+Marty Cagan: In feature team organizations, product managers are glorified project managers. Executives give them a list of features (a roadmap), and their job is simply to manage engineering output to deliver those features on time. Empowered product teams, by contrast, are given problems to solve and business outcomes to achieve (e.g. reduce churn by 15%, increase onboarding conversion by 20%). They are empowered to discover the best solution.
+
+Lenny: How do empowered teams approach Product Discovery?
+
+Marty Cagan: Discovery is about answering four fundamental risks before committing engineering resources to build code:
+1. Value Risk: Will customers buy it or choose to use it?
+2. Usability Risk: Can users figure out how to use it?
+3. Feasibility Risk: Can our engineers build it with available tech and time?
+4. Viability Risk: Does this solution work for our business (legal, financial, compliance, sales)?
+
+Empowered teams prototype rapidly—testing 10 to 20 ideas per week with real users—to validate value and viability before building production software.
+
+Lenny: What advice do you give product leaders struggling with stakeholder roadmap demands?
+
+Marty Cagan: Replace fixed-date feature roadmaps with Outcome-Based Roadmaps. Shift stakeholder reviews from discussing feature requests to reviewing progress against key customer and business outcomes.
