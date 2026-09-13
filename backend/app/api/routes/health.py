@@ -4,12 +4,13 @@ from sqlalchemy import text
 from app.db.database import get_db
 from app.llm.ollama import OllamaProvider
 from app.llm.anthropic import AnthropicProvider
+from app.llm.openai import OpenAIProvider
 
 router = APIRouter(tags=["Health"])
 
 @router.get("/health")
 async def health_check(db: Session = Depends(get_db)):
-    """Health check endpoint checking Database, Ollama, and Cloud Provider."""
+    """Health check endpoint checking Database, Ollama, Anthropic, and OpenAI providers."""
     # Check DB
     db_status = "healthy"
     try:
@@ -25,11 +26,17 @@ async def health_check(db: Session = Depends(get_db)):
     anthropic_provider = AnthropicProvider()
     anthropic_health = await anthropic_provider.check_health()
 
+    # Check OpenAI
+    openai_provider = OpenAIProvider()
+    openai_health = await openai_provider.check_health()
+
     overall_status = "ok" if db_status == "healthy" else "degraded"
 
     return {
         "status": overall_status,
         "database": db_status,
         "ollama": ollama_health,
-        "anthropic": anthropic_health
+        "anthropic": anthropic_health,
+        "openai": openai_health
     }
+

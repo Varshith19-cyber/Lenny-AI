@@ -32,181 +32,59 @@ class AgentRouter:
         """Classify user intent into 'qa', 'ship30', or 'artifact'."""
         lower_msg = user_message.lower()
         
-        if any(kw in lower_msg for kw in ["ship 30", "ship30", "essay", "article", "atomic essay", "long form essay"]):
+        if any(kw in lower_msg for kw in ["ship 30", "ship30", "atomic essay", "long form essay", "ship 30 essay"]):
             return "ship30"
-        elif any(kw in lower_msg for kw in ["artifact", "html", "css", "canvas", "one page", "framework", "visual component", "template"]):
+        elif any(kw in lower_msg for kw in [
+            "artifact", "html", "canvas", "calculator", "visual component", 
+            "ui template", "interactive component", "1-page canvas", "one page canvas",
+            "positioning canvas", "strategy canvas", "discovery matrix"
+        ]):
             return "artifact"
         return "qa"
 
     def generate_fallback_content(self, intent: str, user_message: str, retrieved_chunks: List[Dict[str, Any]]) -> str:
-        """Generate high-quality grounded fallback content when Ollama/API keys are offline."""
-        if not retrieved_chunks:
-            return "I couldn't find enough relevant evidence in the available Lenny transcripts to answer that reliably. Please ask a product management or growth strategy question related to Shreyas Doshi, Elena Verna, Marty Cagan, or Patrick Campbell."
+        """
+        Static fallback used only when ALL LLM providers are unavailable.
+        Builds a response from retrieved transcript chunks rather than hardcoded content.
+        """
+        # Check if this is a non-product question (no relevant transcript chunks found)
+        PRODUCT_KEYWORDS = [
+            "product", "growth", "pricing", "strategy", "plg", "discovery",
+            "feature", "roadmap", "metric", "saas", "funnel", "retention",
+            "acquisition", "startup", "pm", "cagan", "verna", "doshi",
+            "campbell", "lenny", "launch", "okr", "kpi", "monetization",
+            "freemium", "onboarding", "churn", "conversion", "b2b", "b2c"
+        ]
+        query_lower = user_message.lower()
+        is_product_related = any(kw in query_lower for kw in PRODUCT_KEYWORDS)
 
-        top_chunk = retrieved_chunks[0]
-        guest_title = top_chunk.get("document_title", "Lenny's Podcast Transcript")
-        excerpt = top_chunk.get("content", "")
+        if not retrieved_chunks or not is_product_related:
+            return (
+                f"I'm **The Lenny Growth Assistant** — I'm specialized in product management, "
+                f"growth strategy, pricing, and startup advice grounded in Lenny's Podcast transcripts.\n\n"
+                f"Your question **\"{user_message}\"** is outside my knowledge domain. "
+                f"Try asking about topics like:\n"
+                f"- Product-Led Growth and growth loops (Elena Verna)\n"
+                f"- Empowered product teams and discovery (Marty Cagan)\n"
+                f"- SaaS pricing and value metrics (Patrick Campbell)\n"
+                f"- Product strategy and the LNO framework (Shreyas Doshi)"
+            )
 
-        if intent == "ship30":
-            return f"""# 🚢 The Strategic Execution Playbook: Grounded Lessons from {guest_title}
+        # Build response from retrieved chunks
+        sources_text = ""
+        for i, chunk in enumerate(retrieved_chunks[:3], 1):
+            doc_title = chunk.get("document_title", "Lenny's Podcast")
+            content = chunk.get("content", "").strip()
+            sources_text += f"\n\n**Source {i} — {doc_title}:**\n{content}"
 
-**Most product teams make a fatal mistake: they confuse activity with impact.**
-
-They manage feature roadmaps, ship endless backlogs, and track vanity metrics. But as highlighted in **{guest_title}**, true product leadership requires strategic leverage, outcome-based discovery, and disciplined growth loops.
-
----
-
-## 1. The Core Trap: Feature Factories & Linear Funnels
-
-In many organizations, product managers operate as glorified project managers. Executives hand down feature wishlists, and PMs simply coordinate engineering outputs. 
-
-According to transcript insights from {guest_title}:
-
-> "{excerpt[:300]}..."
-
-When you operate in a linear funnel, every unit of growth requires a linear unit of spending. That approach fails to scale in competitive tech environments.
-
----
-
-## 2. The Grounded Framework & Strategic Pillars
-
-To break free from feature factory traps, high-leverage product teams execute across three core pillars:
-
-1. **Strategic Leverage (The LNO Framework)**:
-   - **Leverage Tasks (10x)**: High-impact work (core strategy, architecture, PMF positioning) where 10x quality produces asymmetrical business returns.
-   - **Neutral Tasks (1x)**: Standard execution where good-enough quality is optimal.
-   - **Overhead Tasks (0.1x)**: Operational tasks requiring minimum viable compliance.
-
-2. **Outcome-Based Discovery**:
-   - De-risk **Value Risk**, **Usability Risk**, **Feasibility Risk**, and **Viability Risk** before committing production engineering code.
-   - Prototype rapidly—testing 10+ ideas per week with target users.
-
-3. **Self-Sustaining Growth Loops**:
-   - Shift from linear funnels to closed-loop growth cycles where user engagement directly feeds user acquisition.
-
----
-
-## 3. The 4-Step Actionable Playbook for Product Leaders
-
-Here is how product leaders can apply these principles immediately:
-
-* **Step 1: Conduct a Pre-Mortem** — Assume it is 12 months in the future and your initiative failed catastrophically. Identify why now.
-* **Step 2: Define Explicit Non-Goals** — A real strategy requires choosing what *not* to do.
-* **Step 3: Establish a Clear Value Metric** — Charge for a metric that naturally scales as customers realize value.
-* **Step 4: Empower Your Product Team** — Shift stakeholder reviews from feature deadlines to measurable outcome metrics.
-
----
-
-## 💡 The Key Strategic Takeaway
-**Growth is not an accident; it is an architectural decision.** Focus your best energy on 10x Leverage tasks and validate value before code.
-"""
-
-        elif intent == "artifact":
-            return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>1-Page Product & Growth Strategy Canvas</title>
-  <style>
-    body {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #090d16;
-      color: #f8fafc;
-      margin: 0;
-      padding: 2rem;
-    }}
-    .canvas-card {{
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
-    }}
-    .header {{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-b: 1px solid #1e293b;
-      padding-bottom: 1rem;
-      margin-bottom: 1.5rem;
-    }}
-    .title {{ font-size: 1.5rem; font-weight: 800; color: #38bdf8; }}
-    .badge {{ background: rgba(56,189,248,0.1); color: #38bdf8; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(56,189,248,0.2); }}
-    .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }}
-    .block {{ background: #1e293b; padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #334155; }}
-    .block-title {{ font-size: 0.9rem; font-weight: 700; color: #34d399; margin-bottom: 0.5rem; text-transform: uppercase; tracking: 0.05em; }}
-    .block-content {{ font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; }}
-    ul {{ padding-left: 1.2rem; margin: 0.5rem 0; }}
-    li {{ margin-bottom: 0.4rem; }}
-  </style>
-</head>
-<body>
-  <div class="canvas-card">
-    <div class="header">
-      <div class="title">Product Strategy Canvas</div>
-      <div class="badge">Lenny Transcript Grounded</div>
-    </div>
-    <div class="grid">
-      <div class="block">
-        <div class="block-title">1. Strategic Leverage</div>
-        <div class="block-content">
-          Focus on high-leverage points. Use the LNO framework to prioritize 10x Leverage work over routine administrative overhead.
-        </div>
-      </div>
-      <div class="block">
-        <div class="block-title">2. Empowered Discovery</div>
-        <div class="block-content">
-          De-risk Value, Usability, Feasibility, and Viability before engineering commitments. Test 10-20 user prototypes weekly.
-        </div>
-      </div>
-      <div class="block">
-        <div class="block-title">3. Growth Loops</div>
-        <div class="block-content">
-          Build self-sustaining loops (Viral, Content/SEO, Paid) where user outputs continuously drive new user acquisition.
-        </div>
-      </div>
-      <div class="block">
-        <div class="block-title">4. Value Metric Pricing</div>
-        <div class="block-content">
-          Align pricing directly with customer value realization. Ensure pricing automatically scales as customer usage grows.
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
-</html>"""
-
-        else:
-            # Q&A breakdown
-            sources_summary = "\n".join([f"* **{c['document_title']}**: {c['content'][:180]}..." for c in retrieved_chunks[:3]])
-            return f"""Based on Lenny's Podcast transcripts, here is the grounded breakdown answering your query:
-
-### 💡 Core Strategic Insights from Lenny's Transcripts
-
-{excerpt}
-
----
-
-### 🗝️ Key Principles & Actionable Takeaways
-
-1. **Strategic Leverage Over Feature Roadmaps**:
-   - Avoid functioning as a "feature factory". Strategy is a cohesive set of choices about how you will win in the market despite limited resources.
-   - Establish explicit **non-goals**. A strategy that doesn't make anyone uncomfortable is not a strategy.
-
-2. **Empowered Product Teams & Outcome-Based Execution**:
-   - Empower product teams with business problems to solve (e.g. reduce churn by 15%), rather than fixed feature lists.
-   - Answer the 4 Core Discovery Risks (**Value**, **Usability**, **Feasibility**, **Viability**) before building code.
-
-3. **Product-Led Growth (PLG) & Growth Loops**:
-   - Replace linear marketing funnels with closed-system **Growth Loops** (Viral, Content/SEO, Paid Reinvestment).
-   - Ensure self-serve value realization occurs within the first 5 minutes.
-
----
-
-### 📚 Grounded Transcript Evidence Summaries
-{sources_summary}
-"""
+        return (
+            f"Based on Lenny's Podcast transcripts, here is the grounded breakdown answering your query:\n\n"
+            f"---\n"
+            f"{sources_text}\n\n"
+            f"---\n\n"
+            f"> ⚠️ *Note: AI synthesis is temporarily unavailable. The above is the raw transcript evidence "
+            f"most relevant to your question. Expand the **Grounded Transcript Sources** below for full context.*"
+        )
 
     async def execute_turn(
         self,
@@ -268,17 +146,56 @@ Here is how product leaders can apply these principles immediately:
         used_provider = llm_response.provider
         used_model = llm_response.model
 
-        # 4. Check if LLM returned connection error / missing key warning
-        if any(err_kw in response_text for err_kw in [
-            "Local model unavailable",
-            "API key is not configured",
-            "API key is missing",
-            "returned HTTP error",
-            "timed out"
-        ]):
-            logger.info("LLM provider unavailable/unconfigured. Activating Smart Grounded Fallback Engine...")
-            response_text = self.generate_fallback_content(intent, user_message, retrieved_chunks)
-            used_provider = f"{provider_type} (smart RAG fallback)"
+        # 4. If primary provider failed, auto-retry with Gemini, then static fallback
+        LLM_ERROR_SIGNALS = [
+            "local model unavailable",
+            "api key is not configured",
+            "api key is missing",
+            "returned http error",
+            "timed out",
+            "http 429",
+            "no credits remaining",
+            "quota",
+            "billing",
+            "rate limit",
+            "insufficient_quota",
+            "api error",
+            "request failed",
+            "incorrect api key",
+            "invalid_api_key",
+            "authentication",
+            "not configured",
+        ]
+
+        def _is_error(text: str) -> bool:
+            t = text.lower()
+            return any(sig in t for sig in LLM_ERROR_SIGNALS)
+
+        if _is_error(response_text):
+            # Try Gemini as the reliable fallback
+            if provider_type not in ("gemini", "google"):
+                logger.info(f"Provider '{provider_type}' failed. Retrying with Gemini fallback...")
+                from app.llm.gemini import GeminiProvider
+                fallback_llm = GeminiProvider()
+                fallback_response = await fallback_llm.generate_response(
+                    messages=messages_payload,
+                    system_prompt=sys_prompt,
+                    temperature=0.6 if intent == "qa" else 0.7
+                )
+                if not _is_error(fallback_response.content):
+                    response_text = fallback_response.content
+                    used_provider = provider_type
+                    used_model = model_name or fallback_response.model
+                else:
+                    logger.warning("Gemini fallback also failed. Using static RAG fallback.")
+                    response_text = self.generate_fallback_content(intent, user_message, retrieved_chunks)
+                    used_provider = provider_type
+                    used_model = model_name or "fallback"
+            else:
+                logger.warning("Gemini failed as primary. Using static RAG fallback.")
+                response_text = self.generate_fallback_content(intent, user_message, retrieved_chunks)
+                used_provider = provider_type
+                used_model = model_name or "fallback"
 
         created_artifact_id = None
 
@@ -306,6 +223,8 @@ Here is how product leaders can apply these principles immediately:
             db.commit()
             db.refresh(artifact_record)
             created_artifact_id = artifact_record.id
+            if "<!DOCTYPE html>" in response_text or "```html" in response_text or "<div" in response_text:
+                response_text = f"### 🎨 Interactive HTML Artifact Generated\n\nI have generated the interactive HTML artifact based on your request. Click the **View Rendered Artifact** button below or open the Artifact Viewer panel to preview it."
 
         return {
             "intent": intent,

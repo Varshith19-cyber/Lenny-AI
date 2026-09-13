@@ -1,0 +1,28 @@
+/* Source: https://threeui.com/source-code/predictive-arc.json
+   SHA-256: efe4447139f1358dd8e9be68edf6fa46cbefbd1de423a4d6c439ca61d2c8eccf
+   Role: shared-style — only the classes required by PredictiveArcCanvas */
+
+.threeui-background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.threeui-background > canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.threeui-background.predictive-arc {
+  background: #030303;
+}
+
+.threeui-background.predictive-arc--light {
+  background: #eef1f6;
+}

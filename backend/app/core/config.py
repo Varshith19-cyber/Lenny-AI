@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: Optional[str] = os.getenv("ANTHROPIC_API_KEY", "")
     DEFAULT_ANTHROPIC_MODEL: str = os.getenv("DEFAULT_ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
     
+    OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY", "")
+    
+    GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY", "")
+    DEFAULT_GEMINI_MODEL: str = os.getenv("DEFAULT_GEMINI_MODEL", "gemini-1.5-flash")
+    
     # RAG Settings
     EMBEDDING_DIM: int = 384
     CHUNK_SIZE: int = 500

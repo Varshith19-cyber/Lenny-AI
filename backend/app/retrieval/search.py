@@ -24,17 +24,38 @@ class RAGRetriever:
             return []
             
         scored_chunks = []
+        query_lower = query.lower()
+
         for chunk in chunks:
             sim_score = embedding_engine.cosine_similarity(query_vec, chunk.embedding_json)
-            if sim_score > 0.10: # Minimum similarity threshold
-                doc = db.query(DocumentModel).filter(DocumentModel.id == chunk.document_id).first()
-                doc_title = doc.title if doc else "Lenny's Podcast Transcript"
-                source_url = doc.source_url if doc else ""
-                episode_id = doc.episode_id if doc else ""
+            doc = db.query(DocumentModel).filter(DocumentModel.id == chunk.document_id).first()
+            doc_title = doc.title if doc else "Lenny's Podcast Transcript"
+            source_url = doc.source_url if doc else ""
+            episode_id = doc.episode_id if doc else ""
 
+            # Speaker & Topic keyword boosting
+            content_lower = chunk.content.lower()
+            title_lower = doc_title.lower()
+            boost = 0.0
+
+            speaker_keywords = {
+                "shreyas": ["shreyas", "doshi", "lno", "pre-mortem", "leverage task"],
+                "elena": ["elena", "verna", "plg", "growth loop", "freemium", "funnel"],
+                "patrick": ["patrick", "campbell", "pricing", "value metric", "monetization"],
+                "cagan": ["marty", "cagan", "discovery", "feature factory", "empowered team"]
+            }
+
+            for speaker, kws in speaker_keywords.items():
+                if any(kw in query_lower for kw in kws):
+                    if any(kw in content_lower or kw in title_lower for kw in kws):
+                        boost += 0.35
+
+            final_score = round(sim_score + boost, 4)
+
+            if final_score > 0.10:
                 scored_chunks.append({
                     "chunk_id": chunk.id,
-                    "score": round(sim_score, 4),
+                    "score": final_score,
                     "content": chunk.content,
                     "document_title": doc_title,
                     "episode_id": episode_id,
@@ -43,7 +64,7 @@ class RAGRetriever:
                     "metadata": chunk.meta_info or {}
                 })
 
-        # Sort by similarity score descending
+        # Sort by boosted similarity score descending
         scored_chunks.sort(key=lambda x: x["score"], reverse=True)
         top_results = scored_chunks[:k]
         

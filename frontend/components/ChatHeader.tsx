@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ModelProvider } from '../types';
-import { Cpu, Cloud, Sparkles, Layout, Zap, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Layout, Home } from 'lucide-react';
 
 interface ChatHeaderProps {
   selectedProvider: string;
@@ -11,74 +11,36 @@ interface ChatHeaderProps {
   activeArtifactCount: number;
   onToggleArtifactViewer: () => void;
   isArtifactOpen: boolean;
+  onGoToLanding?: () => void;
 }
 
 export const ChatHeader: React.FC<ChatHeaderProps> = ({
   selectedProvider,
-  onProviderChange,
   providers,
   activeArtifactCount,
   onToggleArtifactViewer,
   isArtifactOpen,
+  onGoToLanding,
 }) => {
   const currentProvider = providers.find((p) => p.id === selectedProvider);
   const isAvailable = currentProvider?.available ?? false;
 
   return (
-    <header className="px-6 py-3.5 bg-slate-950/90 border-b border-slate-800/80 flex items-center justify-between backdrop-blur-xl z-10 select-none">
-      {/* Title & Status Badge */}
+    <header className="px-6 py-3.5 bg-slate-950/50 border-b border-slate-800/60 flex items-center justify-between backdrop-blur-2xl z-10 select-none">
+      {/* Title & status */}
       <div className="flex items-center gap-3">
-        <h2 className="text-sm font-bold text-slate-100 tracking-tight flex items-center gap-2">
+        <h2 className="text-sm font-bold text-slate-100 tracking-tight">
           Lenny Growth Knowledge Assistant
         </h2>
         <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono rounded-full bg-slate-900 border border-slate-800 text-slate-300">
-          <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-400 shadow-sm shadow-emerald-400' : 'bg-amber-400 shadow-sm shadow-amber-400'}`}></span>
+          <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-400 shadow-sm shadow-emerald-400' : 'bg-amber-400 shadow-sm shadow-amber-400'}`} />
           {isAvailable ? 'RAG Engine Active' : 'Fallback Grounding'}
         </span>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center gap-3">
-        {/* Model Provider Toggle Selector */}
-        <div className="flex items-center bg-slate-900/90 border border-slate-800 p-1 rounded-xl text-xs space-x-1 shadow-inner">
-          <button
-            onClick={() => onProviderChange('ollama')}
-            className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition ${
-              selectedProvider === 'ollama'
-                ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-            }`}
-          >
-            <Cpu className="w-3.5 h-3.5" />
-            <span>Ollama Local</span>
-          </button>
-
-          <button
-            onClick={() => onProviderChange('anthropic')}
-            className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition ${
-              selectedProvider === 'anthropic'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-            }`}
-          >
-            <Cloud className="w-3.5 h-3.5" />
-            <span>Claude Cloud</span>
-          </button>
-
-          <button
-            onClick={() => onProviderChange('openai')}
-            className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition ${
-              selectedProvider === 'openai'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-            }`}
-          >
-            <Zap className="w-3.5 h-3.5" />
-            <span>GPT-4o</span>
-          </button>
-        </div>
-
-        {/* Artifact Viewer Toggle */}
+      {/* Top right actions */}
+      <div className="flex items-center gap-2.5">
+        {/* Artifact viewer toggle — only shown when artifacts exist */}
         {activeArtifactCount > 0 && (
           <button
             onClick={onToggleArtifactViewer}
@@ -90,6 +52,19 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           >
             <Layout className="w-3.5 h-3.5 text-sky-400" />
             <span>Artifacts ({activeArtifactCount})</span>
+          </button>
+        )}
+
+        {/* Landing Page navigation button */}
+        {onGoToLanding && (
+          <button
+            onClick={onGoToLanding}
+            id="top-nav-landing-page-btn"
+            className="px-3.5 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-2 bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-600 transition shadow-sm active:scale-[0.98]"
+            title="Go to Landing Page"
+          >
+            <Home className="w-3.5 h-3.5 text-sky-400" />
+            <span>Landing Page</span>
           </button>
         )}
       </div>

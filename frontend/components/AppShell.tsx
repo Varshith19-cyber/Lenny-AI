@@ -9,7 +9,11 @@ import { MessageList } from './MessageList';
 import { Composer } from './Composer';
 import { ArtifactViewer } from './ArtifactViewer';
 
-export const AppShell: React.FC = () => {
+interface AppShellProps {
+  onGoToLanding?: () => void;
+}
+
+export const AppShell: React.FC<AppShellProps> = ({ onGoToLanding }) => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -17,7 +21,8 @@ export const AppShell: React.FC = () => {
   const [selectedArtifact, setSelectedArtifact] = useState<Artifact | null>(null);
   const [isArtifactOpen, setIsArtifactOpen] = useState(false);
   const [providers, setProviders] = useState<ModelProvider[]>([]);
-  const [selectedProvider, setSelectedProvider] = useState<string>('ollama');
+  const [selectedProvider, setSelectedProvider] = useState<string>('gemini');
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-1.5-flash');
   const [isLoading, setIsLoading] = useState(false);
 
   // Initial Load: Fetch Sessions & Available LLM Providers
@@ -28,14 +33,35 @@ export const AppShell: React.FC = () => {
           fetchSessions(),
           fetchModels().catch(() => ({ providers: [] }))
         ]);
-        setSessions(sessionList);
-        setProviders(modelData.providers || []);
+        const availableProviders = modelData.providers || [];
+        setProviders(availableProviders);
 
-        if (sessionList.length > 0) {
-          setActiveSessionId(sessionList[0].id);
+        // Auto-select first available provider (prefer gemini > openai > anthropic > ollama)
+        const preferred = ['gemini', 'openai', 'anthropic', 'ollama'];
+        const firstAvailable = preferred.find(id => availableProviders.find((p: ModelProvider) => p.id === id && p.available));
+        if (firstAvailable) setSelectedProvider(firstAvailable);
+
+        // ALWAYS open a new chat when entering chat
+        let targetSession: Session;
+        if (sessionList.length > 0 && sessionList[0].title === 'New Conversation') {
+          const msgs = await fetchMessages(sessionList[0].id).catch(() => []);
+          if (msgs.length === 0) {
+            targetSession = sessionList[0];
+            setSessions(sessionList);
+          } else {
+            targetSession = await createSession('New Conversation');
+            setSessions([targetSession, ...sessionList]);
+          }
         } else {
-          handleNewChat();
+          targetSession = await createSession('New Conversation');
+          setSessions([targetSession, ...sessionList]);
         }
+
+        setActiveSessionId(targetSession.id);
+        setMessages([]);
+        setArtifacts([]);
+        setSelectedArtifact(null);
+        setIsArtifactOpen(false);
       } catch (err) {
         console.error('Failed to initialize application:', err);
       }
@@ -103,7 +129,8 @@ export const AppShell: React.FC = () => {
       const res = await sendMessage({
         session_id: activeSessionId,
         message: text,
-        provider: selectedProvider
+        provider: selectedProvider,
+        model: selectedModel,
       });
 
       // Refresh messages & artifacts from backend
@@ -161,7 +188,7 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 font-sans">
+    <div className="flex h-screen w-screen overflow-hidden font-sans">
       {/* Left Sidebar */}
       <Sidebar
         sessions={sessions}
@@ -169,6 +196,7 @@ export const AppShell: React.FC = () => {
         onSelectSession={setActiveSessionId}
         onNewChat={handleNewChat}
         onDeleteSession={handleDeleteSession}
+        onGoToLanding={onGoToLanding}
       />
 
       {/* Main Conversation & Header */}
@@ -180,6 +208,7 @@ export const AppShell: React.FC = () => {
           activeArtifactCount={artifacts.length}
           onToggleArtifactViewer={() => setIsArtifactOpen(!isArtifactOpen)}
           isArtifactOpen={isArtifactOpen}
+          onGoToLanding={onGoToLanding}
         />
 
         <div className="flex-1 flex h-[calc(100%-57px)] overflow-hidden">
@@ -191,7 +220,15 @@ export const AppShell: React.FC = () => {
               onSelectArtifact={handleSelectArtifact}
               artifacts={artifacts}
             />
-            <Composer onSendMessage={handleSendMessage} isLoading={isLoading} />
+            <Composer
+              onSendMessage={handleSendMessage}
+              isLoading={isLoading}
+              selectedProvider={selectedProvider}
+              selectedModel={selectedModel}
+              onProviderChange={setSelectedProvider}
+              onModelChange={setSelectedModel}
+              providers={providers}
+            />
           </div>
 
           {/* Right Artifact Viewer Panel */}

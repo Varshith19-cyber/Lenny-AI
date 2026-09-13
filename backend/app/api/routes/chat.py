@@ -14,7 +14,7 @@ router = APIRouter(prefix="/chat", tags=["Chat"])
 class ChatRequest(BaseModel):
     session_id: str
     message: str
-    provider: Optional[str] = "ollama" # "ollama" or "anthropic"
+    provider: Optional[str] = "gemini" # "gemini", "ollama", "anthropic", or "openai"
     model: Optional[str] = None
     stream: Optional[bool] = False
 

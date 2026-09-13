@@ -10,6 +10,7 @@ interface SidebarProps {
   onSelectSession: (id: string) => void;
   onNewChat: () => void;
   onDeleteSession: (id: string) => void;
+  onGoToLanding?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -18,19 +19,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectSession,
   onNewChat,
   onDeleteSession,
+  onGoToLanding,
 }) => {
   return (
-    <aside className="w-72 bg-slate-950/90 border-r border-slate-800/80 flex flex-col h-full shrink-0 select-none backdrop-blur-xl">
+    <aside className="w-72 bg-slate-950/60 border-r border-slate-800/60 flex flex-col h-full shrink-0 select-none backdrop-blur-2xl">
       {/* Brand Header */}
       <div className="p-4 border-b border-slate-800/60 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-purple-500 p-0.5 shadow-lg shadow-sky-500/20">
+        <div
+          onClick={onGoToLanding}
+          className={`flex items-center gap-3 ${onGoToLanding ? 'cursor-pointer group' : ''}`}
+          title={onGoToLanding ? 'Back to Landing Page' : undefined}
+        >
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-purple-500 p-0.5 shadow-lg shadow-sky-500/20 group-hover:scale-105 transition">
             <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-sky-400" />
             </div>
           </div>
           <div>
-            <h1 className="text-sm font-bold text-slate-100 tracking-tight flex items-center gap-1.5">
+            <h1 className="text-sm font-bold text-slate-100 tracking-tight flex items-center gap-1.5 group-hover:text-sky-300 transition">
               Lenny AI
               <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">
                 v1.0
@@ -112,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Profile Footer */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950 flex items-center justify-between">
+      <div className="p-3 border-t border-slate-800/60 bg-transparent flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-semibold text-xs">
             PL

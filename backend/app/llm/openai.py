@@ -8,7 +8,7 @@ from app.core.logging import logger
 class OpenAIProvider(BaseLLMProvider):
     def __init__(self, model_name: Optional[str] = None, api_key: Optional[str] = None):
         super().__init__(model_name or "gpt-4o-mini")
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
+        self.api_key = api_key or settings.OPENAI_API_KEY or os.getenv("OPENAI_API_KEY", "")
 
     async def check_health(self) -> Dict[str, Any]:
         """Check if OpenAI API key is configured."""
