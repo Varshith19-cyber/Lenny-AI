@@ -11,13 +11,14 @@
 [![SQLite](https://img.shields.io/badge/Database-SQLite%20%7C%20PostgreSQL-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org/)
 [![Docker](https://img.shields.io/badge/Container-Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-lennyai.vercel.app-5C6BC0?style=for-the-badge&logo=vercel&logoColor=white)](https://lennyai.vercel.app)
 
 <p align="center">
   <b>A production-ready conversational intelligence platform grounded strictly in transcripts from <a href="https://www.lennysnewsletter.com/podcast">Lenny's Podcast & Newsletter</a>.</b><br/>
   Featuring multi-provider LLM orchestration, local semantic vector search, dynamic Ship 30 essay generation, and an isolated sandboxed HTML/CSS artifact execution engine.
 </p>
 
-[Key Features](#-key-features) • [System Architecture](#-system-architecture) • [Quick Start](#-quick-start) • [LLM Providers](#-llm-provider-orchestration) • [Artifact Engine](#-in-app-artifact-viewer--security) • [Testing](#-test-suite--validation) • [Deployment](#-free-cloud-deployment)
+[Key Features](#-key-features) • [System Architecture](#-system-architecture) • [Quick Start](#-quick-start) • [LLM Providers](#-llm-provider-orchestration) • [Artifact Engine](#-in-app-artifact-viewer--security) • [Testing](#-test-suite--validation) • [**🚀 Live Demo**](https://lennyai.vercel.app)
 
 ---
 
@@ -278,24 +279,11 @@ docker compose up --build
 
 ---
 
-## 🌐 Free Cloud Deployment
+## 🌐 Live Demo
 
-Deploy this full-stack project **100% free** in less than 5 minutes:
+**[🚀 lennyai.vercel.app](https://lennyai.vercel.app)**
 
-### 1. Backend on [Render.com](https://render.com) (Free Tier)
-- Connect your GitHub repository.
-- **Root Directory**: `backend`
-- **Build Command**: `pip install -r requirements.txt`
-- **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- **Environment Variables**: Add `DATABASE_URL=sqlite:///./lenny_growth.db` and your API keys.
 
-### 2. Frontend on [Vercel](https://vercel.com) (Free Tier)
-- Import your GitHub repository into Vercel.
-- **Root Directory**: `frontend`
-- **Framework Preset**: `Next.js`
-- **Environment Variable**: `NEXT_PUBLIC_API_URL=https://your-render-backend.onrender.com/api/v1`
-
----
 
 ## 📂 Repository Structure
 
