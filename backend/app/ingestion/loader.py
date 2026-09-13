@@ -5,8 +5,12 @@ from typing import List, Dict, Any
 from app.core.logging import logger
 
 class TranscriptLoader:
-    def __init__(self, data_dir: str = "data/transcripts"):
-        self.data_dir = data_dir
+    def __init__(self, data_dir: str = None):
+        # Resolve absolute path to data/transcripts relative to project root
+        if not data_dir:
+            base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+            data_dir = os.path.join(base_dir, "data", "transcripts")
+        self.data_dir = os.path.abspath(data_dir)
 
     def load_transcripts(self) -> List[Dict[str, Any]]:
         """Load text or json transcript files from data directory."""

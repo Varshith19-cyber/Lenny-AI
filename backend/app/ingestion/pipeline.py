@@ -7,7 +7,7 @@ from app.retrieval.embeddings import embedding_engine
 from app.core.logging import logger
 
 class IngestionPipeline:
-    def run_pipeline(self, db: Session, transcripts_dir: str = "data/transcripts") -> Dict[str, Any]:
+    def run_pipeline(self, db: Session, transcripts_dir: str = None) -> Dict[str, Any]:
         """
         Execute reproducible ingestion pipeline:
         1. Load transcripts
@@ -16,7 +16,8 @@ class IngestionPipeline:
         4. Generate embeddings
         5. Persist to PostgreSQL / DB
         """
-        loader.data_dir = transcripts_dir
+        if transcripts_dir:
+            loader.data_dir = os.path.abspath(transcripts_dir)
         transcripts = loader.load_transcripts()
         
         if not transcripts:

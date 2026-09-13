@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ModelProvider } from '../types';
-import { Cpu, Cloud, Layout, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Cpu, Cloud, Sparkles, Layout, Zap, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface ChatHeaderProps {
   selectedProvider: string;
@@ -25,42 +25,56 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   const isAvailable = currentProvider?.available ?? false;
 
   return (
-    <header className="px-6 py-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-      {/* Active Conversation Title */}
+    <header className="px-6 py-3.5 bg-slate-950/90 border-b border-slate-800/80 flex items-center justify-between backdrop-blur-xl z-10 select-none">
+      {/* Title & Status Badge */}
       <div className="flex items-center gap-3">
-        <h2 className="text-sm font-semibold text-slate-100">Lenny Growth Knowledge Assistant</h2>
-        <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono rounded-full bg-slate-900 border border-slate-800 text-slate-400">
-          <span className={`w-1.5 h-1.5 rounded-full ${isAvailable ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
-          {isAvailable ? 'Ready' : 'Fallback Mode'}
+        <h2 className="text-sm font-bold text-slate-100 tracking-tight flex items-center gap-2">
+          Lenny Growth Knowledge Assistant
+        </h2>
+        <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono rounded-full bg-slate-900 border border-slate-800 text-slate-300">
+          <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-400 shadow-sm shadow-emerald-400' : 'bg-amber-400 shadow-sm shadow-amber-400'}`}></span>
+          {isAvailable ? 'RAG Engine Active' : 'Fallback Grounding'}
         </span>
       </div>
 
       {/* Controls */}
       <div className="flex items-center gap-3">
-        {/* Model Selector Toggle */}
-        <div className="flex items-center bg-slate-900 border border-slate-800 rounded-xl p-1 text-xs">
+        {/* Model Provider Toggle Selector */}
+        <div className="flex items-center bg-slate-900/90 border border-slate-800 p-1 rounded-xl text-xs space-x-1 shadow-inner">
           <button
             onClick={() => onProviderChange('ollama')}
-            className={`px-3 py-1 rounded-lg flex items-center gap-1.5 font-medium transition ${
+            className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition ${
               selectedProvider === 'ollama'
-                ? 'bg-sky-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
             }`}
           >
             <Cpu className="w-3.5 h-3.5" />
-            <span>Ollama (Local)</span>
+            <span>Ollama Local</span>
           </button>
 
           <button
             onClick={() => onProviderChange('anthropic')}
-            className={`px-3 py-1 rounded-lg flex items-center gap-1.5 font-medium transition ${
+            className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition ${
               selectedProvider === 'anthropic'
-                ? 'bg-sky-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
             }`}
           >
             <Cloud className="w-3.5 h-3.5" />
-            <span>Claude (Cloud)</span>
+            <span>Claude Cloud</span>
+          </button>
+
+          <button
+            onClick={() => onProviderChange('openai')}
+            className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition ${
+              selectedProvider === 'openai'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5" />
+            <span>GPT-4o</span>
           </button>
         </div>
 
@@ -68,9 +82,9 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
         {activeArtifactCount > 0 && (
           <button
             onClick={onToggleArtifactViewer}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 border transition ${
+            className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-2 border transition ${
               isArtifactOpen
-                ? 'bg-sky-950 text-sky-300 border-sky-700'
+                ? 'bg-sky-950 text-sky-300 border-sky-600/60 shadow-lg shadow-sky-900/20'
                 : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'
             }`}
           >
