@@ -55,23 +55,23 @@
 
 ```mermaid
 graph TB
-    subgraph Client["Frontend Layer (Next.js 14 / React 18 / Tailwind)"]
+    subgraph Client["Frontend Layer — Next.js 14 + React 18 + Tailwind"]
         UI[Glassmorphic Web App]
         Landing[Interactive Landing Page]
-        Chat[Chat Interface & Composer]
+        Chat[Chat Interface and Composer]
         Viewer[Sandboxed Frame Artifact Viewer]
-        Sidebar[Session History & Knowledge Index]
+        Sidebar[Session History and Knowledge Index]
     end
 
-    subgraph Gateway["API & Routing Layer (FastAPI 0.110)"]
+    subgraph Gateway["API and Routing Layer — FastAPI 0.110"]
         Router[Agent Intent Router]
-        Health[Health & Diagnostics API]
+        Health[Health and Diagnostics API]
         SessionsAPI[Session Lifecycle API]
         ArtifactsAPI[Artifacts API]
     end
 
-    subgraph Intelligence["Cognitive Engine & Core Services"]
-        RAG[Vector Search & Retriever]
+    subgraph Intelligence["Cognitive Engine and Core Services"]
+        RAG[Vector Search and Retriever]
         Ship30[Ship 30 Content Skill]
         Sanitizer[Bleach HTML Sanitizer]
         Embedder[384d Dense Vector Engine]
@@ -79,14 +79,14 @@ graph TB
     end
 
     subgraph LLMs["Supported Model Providers"]
-        Ollama[Ollama (Local Llama 3 / Mistral)]
-        OpenAI[OpenAI (GPT-4o-mini)]
-        Gemini[Google Gemini (1.5 Flash)]
-        Anthropic[Anthropic Claude (3.5 Sonnet)]
+        Ollama[Ollama — Local llama3 and mistral]
+        OpenAI[OpenAI — GPT-4o-mini]
+        Gemini[Google Gemini — 1.5 Flash]
+        Anthropic[Anthropic Claude — 3.5 Sonnet]
     end
 
     subgraph Storage["Persistence Layer"]
-        DB[(SQLite / PostgreSQL + pgvector)]
+        DB[(SQLite and PostgreSQL + pgvector)]
         Transcripts[Seed Transcripts Dataset]
     end
 
