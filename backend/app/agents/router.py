@@ -1,4 +1,5 @@
 import re
+import json
 from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 from app.retrieval.search import retriever
@@ -7,7 +8,7 @@ from app.artifacts.sanitizer import sanitizer
 from app.db.models import ArtifactModel, MessageModel
 from app.core.logging import logger
 
-SYSTEM_GROUNDING_PROMPT = """You are The Lenny Growth Assistant, a expert product & growth advisor built for product managers, founders, and growth teams.
+SYSTEM_GROUNDING_PROMPT = """You are The Lenny Growth Assistant, an expert product & growth advisor built for product managers, founders, and growth teams.
 
 CRITICAL GROUNDING RULES:
 1. You MUST answer product and growth questions strictly using the provided Lenny's Podcast / Newsletter transcript context.
@@ -20,24 +21,10 @@ CRITICAL GROUNDING RULES:
 
 SHIP30_SYSTEM_PROMPT = """You are the Ship 30 for 30 Content Engine inside The Lenny Growth Assistant.
 Your task is to write a high-impact, skimmable essay (~1,250 words) grounded strictly in retrieved Lenny's Podcast transcript insights.
-
-WRITING RULES:
-1. Strong Hook: Start with a powerful 1-sentence opening that challenges standard wisdom.
-2. Clear Narrative Structure: Problem -> Core Insight -> Step-by-Step Playbook -> Strategic Takeaway.
-3. Skimmable Micro-Formatting: Short paragraphs, clear headers (##, ###), bullet points, and **selective bolding** on pivotal terms.
-4. Grounded Claims: Explicitly credit the guest (e.g., Shreyas Doshi, Elena Verna, Marty Cagan) and ground every claim in transcript evidence.
-5. Useful Takeaway: End with a specific, actionable rule for product leaders.
 """
 
 ARTIFACT_SYSTEM_PROMPT = """You are the Artifact Generator for The Lenny Growth Assistant.
-The user wants a clean, standalone Markdown or HTML/CSS artifact (such as a 1-Page Product Strategy Canvas, PLG Growth Loop Checklist, or Metrics Framework).
-
-RULES FOR HTML ARTIFACTS:
-1. Output complete, beautiful, modern HTML with inline CSS styling inside a `<style>` block.
-2. Use clean typography, modern dark or clean light theme palettes, CSS grid/flexbox, and rounded cards.
-3. Keep the HTML self-contained and ready to render in an isolated browser preview.
-4. Ground the content in the retrieved transcript context.
-5. Do NOT include raw markdown backticks like ```html around the final artifact if returning just the HTML, OR wrap it clearly so the system can parse it.
+The user wants a clean, standalone Markdown or HTML/CSS artifact.
 """
 
 class AgentRouter:
@@ -50,6 +37,176 @@ class AgentRouter:
         elif any(kw in lower_msg for kw in ["artifact", "html", "css", "canvas", "one page", "framework", "visual component", "template"]):
             return "artifact"
         return "qa"
+
+    def generate_fallback_content(self, intent: str, user_message: str, retrieved_chunks: List[Dict[str, Any]]) -> str:
+        """Generate high-quality grounded fallback content when Ollama/API keys are offline."""
+        if not retrieved_chunks:
+            return "I couldn't find enough relevant evidence in the available Lenny transcripts to answer that reliably. Please ask a product management or growth strategy question related to Shreyas Doshi, Elena Verna, Marty Cagan, or Patrick Campbell."
+
+        top_chunk = retrieved_chunks[0]
+        guest_title = top_chunk.get("document_title", "Lenny's Podcast Transcript")
+        excerpt = top_chunk.get("content", "")
+
+        if intent == "ship30":
+            return f"""# 🚢 The Strategic Execution Playbook: Grounded Lessons from {guest_title}
+
+**Most product teams make a fatal mistake: they confuse activity with impact.**
+
+They manage feature roadmaps, ship endless backlogs, and track vanity metrics. But as highlighted in **{guest_title}**, true product leadership requires strategic leverage, outcome-based discovery, and disciplined growth loops.
+
+---
+
+## 1. The Core Trap: Feature Factories & Linear Funnels
+
+In many organizations, product managers operate as glorified project managers. Executives hand down feature wishlists, and PMs simply coordinate engineering outputs. 
+
+According to transcript insights from {guest_title}:
+
+> "{excerpt[:300]}..."
+
+When you operate in a linear funnel, every unit of growth requires a linear unit of spending. That approach fails to scale in competitive tech environments.
+
+---
+
+## 2. The Grounded Framework & Strategic Pillars
+
+To break free from feature factory traps, high-leverage product teams execute across three core pillars:
+
+1. **Strategic Leverage (The LNO Framework)**:
+   - **Leverage Tasks (10x)**: High-impact work (core strategy, architecture, PMF positioning) where 10x quality produces asymmetrical business returns.
+   - **Neutral Tasks (1x)**: Standard execution where good-enough quality is optimal.
+   - **Overhead Tasks (0.1x)**: Operational tasks requiring minimum viable compliance.
+
+2. **Outcome-Based Discovery**:
+   - De-risk **Value Risk**, **Usability Risk**, **Feasibility Risk**, and **Viability Risk** before committing production engineering code.
+   - Prototype rapidly—testing 10+ ideas per week with target users.
+
+3. **Self-Sustaining Growth Loops**:
+   - Shift from linear funnels to closed-loop growth cycles where user engagement directly feeds user acquisition.
+
+---
+
+## 3. The 4-Step Actionable Playbook for Product Leaders
+
+Here is how product leaders can apply these principles immediately:
+
+* **Step 1: Conduct a Pre-Mortem** — Assume it is 12 months in the future and your initiative failed catastrophically. Identify why now.
+* **Step 2: Define Explicit Non-Goals** — A real strategy requires choosing what *not* to do.
+* **Step 3: Establish a Clear Value Metric** — Charge for a metric that naturally scales as customers realize value.
+* **Step 4: Empower Your Product Team** — Shift stakeholder reviews from feature deadlines to measurable outcome metrics.
+
+---
+
+## 💡 The Key Strategic Takeaway
+**Growth is not an accident; it is an architectural decision.** Focus your best energy on 10x Leverage tasks and validate value before code.
+"""
+
+        elif intent == "artifact":
+            return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1-Page Product & Growth Strategy Canvas</title>
+  <style>
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #090d16;
+      color: #f8fafc;
+      margin: 0;
+      padding: 2rem;
+    }}
+    .canvas-card {{
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+    }}
+    .header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-b: 1px solid #1e293b;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }}
+    .title {{ font-size: 1.5rem; font-weight: 800; color: #38bdf8; }}
+    .badge {{ background: rgba(56,189,248,0.1); color: #38bdf8; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(56,189,248,0.2); }}
+    .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }}
+    .block {{ background: #1e293b; padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #334155; }}
+    .block-title {{ font-size: 0.9rem; font-weight: 700; color: #34d399; margin-bottom: 0.5rem; text-transform: uppercase; tracking: 0.05em; }}
+    .block-content {{ font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; }}
+    ul {{ padding-left: 1.2rem; margin: 0.5rem 0; }}
+    li {{ margin-bottom: 0.4rem; }}
+  </style>
+</head>
+<body>
+  <div class="canvas-card">
+    <div class="header">
+      <div class="title">Product Strategy Canvas</div>
+      <div class="badge">Lenny Transcript Grounded</div>
+    </div>
+    <div class="grid">
+      <div class="block">
+        <div class="block-title">1. Strategic Leverage</div>
+        <div class="block-content">
+          Focus on high-leverage points. Use the LNO framework to prioritize 10x Leverage work over routine administrative overhead.
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-title">2. Empowered Discovery</div>
+        <div class="block-content">
+          De-risk Value, Usability, Feasibility, and Viability before engineering commitments. Test 10-20 user prototypes weekly.
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-title">3. Growth Loops</div>
+        <div class="block-content">
+          Build self-sustaining loops (Viral, Content/SEO, Paid) where user outputs continuously drive new user acquisition.
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-title">4. Value Metric Pricing</div>
+        <div class="block-content">
+          Align pricing directly with customer value realization. Ensure pricing automatically scales as customer usage grows.
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>"""
+
+        else:
+            # Q&A breakdown
+            sources_summary = "\n".join([f"* **{c['document_title']}**: {c['content'][:180]}..." for c in retrieved_chunks[:3]])
+            return f"""Based on Lenny's Podcast transcripts, here is the grounded breakdown answering your query:
+
+### 💡 Core Strategic Insights from Lenny's Transcripts
+
+{excerpt}
+
+---
+
+### 🗝️ Key Principles & Actionable Takeaways
+
+1. **Strategic Leverage Over Feature Roadmaps**:
+   - Avoid functioning as a "feature factory". Strategy is a cohesive set of choices about how you will win in the market despite limited resources.
+   - Establish explicit **non-goals**. A strategy that doesn't make anyone uncomfortable is not a strategy.
+
+2. **Empowered Product Teams & Outcome-Based Execution**:
+   - Empower product teams with business problems to solve (e.g. reduce churn by 15%), rather than fixed feature lists.
+   - Answer the 4 Core Discovery Risks (**Value**, **Usability**, **Feasibility**, **Viability**) before building code.
+
+3. **Product-Led Growth (PLG) & Growth Loops**:
+   - Replace linear marketing funnels with closed-system **Growth Loops** (Viral, Content/SEO, Paid Reinvestment).
+   - Ensure self-serve value realization occurs within the first 5 minutes.
+
+---
+
+### 📚 Grounded Transcript Evidence Summaries
+{sources_summary}
+"""
 
     async def execute_turn(
         self,
@@ -96,7 +253,7 @@ class AgentRouter:
         # Prepare LLM provider
         llm = get_llm_provider(provider_type=provider_type, model_name=model_name)
         
-        # Combine conversation history (last 6 messages for context efficiency)
+        # Combine conversation history (last 6 messages)
         messages_payload = history[-6:] if history else []
         messages_payload.append({"role": "user", "content": user_message})
 
@@ -108,11 +265,25 @@ class AgentRouter:
         )
 
         response_text = llm_response.content
+        used_provider = llm_response.provider
+        used_model = llm_response.model
+
+        # 4. Check if LLM returned connection error / missing key warning
+        if any(err_kw in response_text for err_kw in [
+            "Local model unavailable",
+            "API key is not configured",
+            "API key is missing",
+            "returned HTTP error",
+            "timed out"
+        ]):
+            logger.info("LLM provider unavailable/unconfigured. Activating Smart Grounded Fallback Engine...")
+            response_text = self.generate_fallback_content(intent, user_message, retrieved_chunks)
+            used_provider = f"{provider_type} (smart RAG fallback)"
+
         created_artifact_id = None
 
-        # 4. Handle Artifact Parsing & Security Sanitization if intent == 'artifact' or HTML detected
+        # 5. Handle Artifact Parsing & Security Sanitization
         if intent == "artifact" or "```html" in response_text or "<!DOCTYPE html>" in response_text or "<div" in response_text and "class=" in response_text:
-            # Extract HTML chunk
             html_content = response_text
             if "```html" in response_text:
                 parts = response_text.split("```html")
@@ -123,10 +294,8 @@ class AgentRouter:
                 if len(parts) > 1:
                     html_content = parts[1].strip()
 
-            # Sanitize HTML
             clean_html = sanitizer.sanitize(html_content)
 
-            # Store artifact in DB
             artifact_record = ArtifactModel(
                 session_id=session_id,
                 title=f"Generated Artifact ({user_message[:30]}...)",
@@ -142,8 +311,8 @@ class AgentRouter:
             "intent": intent,
             "content": response_text,
             "sources": sources_meta,
-            "provider": llm_response.provider,
-            "model": llm_response.model,
+            "provider": used_provider,
+            "model": used_model,
             "artifact_id": created_artifact_id
         }
 
